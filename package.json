@@ -1,10 +1,10 @@
 {
   "name": "js-tppl-cli",
-  "version": "1.0.0",
-  "description": "模板引擎执行脚手架工具",
+  "version": "0.1.0",
+  "description": "tppl模板引擎执命令行工具",
   "main": "index.js",
   "scripts": {
-    "test": "cd example && node ../index.js && cd ..",
+    "test": "node ./index.js test/example --output-dir test/outputs",
     "lint": "eslint --fix ."
   },
   "bin": {

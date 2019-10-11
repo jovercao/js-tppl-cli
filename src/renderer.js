@@ -1,7 +1,7 @@
 const path = require('path')
 const mkdirp = require('mkdirp')
 const fs = require('fs')
-const getLogger = require('./logger')
+const Logger = require('./logger')
 const tppl = require('js-tppl')
 
 /**
@@ -10,14 +10,14 @@ const tppl = require('js-tppl')
  * @param {*} param1 选项
  */
 function renderFile (tplFile, { inputDataFile, outputFile, outputDir, outputExtname }) {
+  const logger = Logger()
   const extname = path.extname(tplFile)
 
+  logger.info(`正在编译文件：${tplFile}`)
   // 默认输出路径为同名的js文件
   outputFile = outputFile ||
     (outputDir && path.join(outputDir, path.basename(tplFile).substring(0, extname.length))) ||
     tplFile.substring(0, tplFile.length - extname.length) + outputExtname
-
-  const logger = getLogger()
 
   outputFile = path.resolve(process.cwd(), outputFile)
 
@@ -46,6 +46,7 @@ function renderFile (tplFile, { inputDataFile, outputFile, outputDir, outputExtn
   const tpl = fs.readFileSync(tplFile).toString()
   const output = tppl(tpl, data)
   fs.writeFileSync(outputFile, output, { encoding: 'utf-8' })
+  logger.info(`编译成功，输出到：${outputFile}`)
 }
 
 /**
@@ -54,12 +55,15 @@ function renderFile (tplFile, { inputDataFile, outputFile, outputDir, outputExtn
  * @param {*} param1 选项
  */
 function renderDir (dirPath, { outputDir, tplExtname, outputExtname }) {
+  const logger = Logger()
   const list = findTppl(dirPath, tplExtname)
   list.forEach(tplFile => {
     // 输出到相对路径
     const outputFile = path.join(outputDir, tplFile.substring(0, tplFile.length - tplExtname.length).substring(dirPath.length) + outputExtname)
     renderFile(tplFile, { outputFile })
   })
+
+  logger.info(`共编译${list.length}个模板文件`)
 }
 
 function findTppl (dirPath, extname, list) {

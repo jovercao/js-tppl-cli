@@ -7,12 +7,13 @@ const fs = require('fs')
 const Logger = require('./src/logger')
 const executor = require('./src/renderer')
 const defaultOptions = require('./src/options/default.json')
+const log4js = require('log4js')
 
 program.version(pkgInfo.version)
 
 const RCFileName = '.tpplrc'
 
-program.command('compile <path>', '编译模板，当path为目录时，会自动查找文件', { isDefault: true })
+program.command('compile <path>', '编译模板，当path为目录时，会自动查找文件')
   .option('-d, --output-dir <dir>', '输出文件夹,文件名与模板文件相同，默认为当前目录')
   .option('-o, --output-file <file>', '输出文件路径及文件名，默认为：当前文件同名的.js文件')
   .option('-i, --input-data-file <file>', '[可选],输入数据文件路径，将被注入到模板上下文的data属性中')
@@ -48,7 +49,7 @@ program.command('compile <path>', '编译模板，当path为目录时，会自�
 
     // 配置选项，命令参数 > 输入路径 > Cwd当前路径 > ~用户目录 > 默认配置
     options = _.defaults(options, dirRcOptions, cwdOptions, userOptions, defaultOptions)
-    const logger = Logger({ enabled: options.enableLog, logPath: 'logs/tpl.log' })
+    const logger = Logger({ enabled: options.enableLog, logPath: 'logs/tppl.log' })
 
     if (!path) {
       path = './'
@@ -77,6 +78,13 @@ program.command('compile <path>', '编译模板，当path为目录时，会自�
         executor.renderDir(path, options)
         break
     }
+
+    logger.info('所有模板编译成功完成！')
+    // log4js.shutdown(function (err) {
+    //   if (err) {
+    //     console.error(err)
+    //   }
+    // })
   })
 
 program.parse(process.argv)
