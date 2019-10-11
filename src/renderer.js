@@ -66,14 +66,12 @@ function renderDir (dirPath, { outputDir, tplExtname, outputExtname }) {
   logger.info(`共编译${list.length}个模板文件`)
 }
 
-function findTppl (dirPath, extname, list) {
-  if (!list) {
-    list = []
-  }
+function findTppl (dirPath, extname) {
+  const list = []
   fs.readdirSync(dirPath).forEach(name => {
     const filePath = path.join(dirPath, name)
     if (fs.statSync(filePath).isDirectory()) {
-      findTppl(filePath, list)
+      list.push(...findTppl(filePath, extname))
       return
     }
     if (filePath.endsWith(extname)) {
