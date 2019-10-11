@@ -1,0 +1,5 @@
+module.exports = {
+  "outputExtname": ".cs",
+  "tplExtname": ".tpl",
+  "enableLog": true
+}
